@@ -30,4 +30,4 @@ Honors Capstone
 
 Logistic Regression to Maximize Profits
 
-![Introduction to Binary Report](Binary.jpg)
+![Introduction to Binary Report](https://github.com/LaurenGroover23/LaurenGroover23.github.io/blob/master/Binary.JPG)
