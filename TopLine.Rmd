@@ -6,10 +6,6 @@ output: html_document
 ---
 
 
-             
-<img src="images/TopLine.JPG" align=middle>
-
-
 R CODE 
 
 ```{r eval=FALSE}
