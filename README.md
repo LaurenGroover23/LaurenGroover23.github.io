@@ -23,3 +23,6 @@ Honors Capstone
 
 
 **Binary Classification**
+Logistic Regression to Maximize Profits
+
+! [Alt text] (/Users/Lauren/Documents/Portfolio/LaurenGroover23.github.io/Binary.jpg)

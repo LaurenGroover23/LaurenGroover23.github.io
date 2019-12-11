@@ -1,0 +1,74 @@
+---
+title: "Binary"
+author: "lauren"
+date: "12/11/2019"
+output: html_document
+---
+
+
+SAS Code
+
+```{r eval=FALSE}
+
+#MACRO WRITTEN TO CREATE HISTOGRAM
+%MACRO Hist(indata, vars);
+%let k = 1;
+%let var = %scan(&vars, &k);
+%do %while(&k le 45); /* NEED TO CHANGE NUMBER TO NUMBER OF VARIABLES!! */
+Proc univariate data=&indata noprint;
+var &var;
+histogram;
+run;
+%let k = %eval(&k + 1);
+%let var = %scan(&vars, &k);
+%end;
+%mend Hist;
+
+%Hist (new, DCRATE3 FFRATE3 BKPOP PFRATE2 OPFPTAT BNKINQ2 PFRATE3 BRCR49 BRHIC BRAGE TR7924 BRR324 ROPEN FFN90P24
+TOPEN3 INQ12 RADB6 FFCRATE1 BRBAL50 DCR7924 BRR4524 BRRATE2 PFTRADES FFRATE2 BNKINQS PFR49 CRATE2 FFAGE DCR4524 BRPCTSAT
+TOPEN24 RBAL6 OT12PTOT DCAGE DCR224 FFOPENB0 FFR29 DCR124 FFPOPEN BRCRATE3 BKP FININQS OBRPTAT BRLAAGE DCR29);
+
+
+#VARIABLE CLUSTERING, KEPT SMALLEST 1-R2
+ods listing close;
+ods output clusterquality = summary rsquare=clusters;
+
+proc varclus data = dropped2 outtree = tree maxclusters = 45;
+var COLLS--BRADBM;
+run;
+ods listing;
+
+data _null_;
+set summary;
+call symput ('nvar',compress(NumberofClusters));
+run;
+
+proc print data = clusters noobs;
+where NumberofClusters = &nvar;
+var cluster variable rsquareratio;
+run;
+
+proc contents data=summary varnum;
+ run;
+
+symbol v=square color=black i=join;
+proc gplot data=summary;
+ plot propvarexplained*numberofclusters;
+run;
+quit;
+
+#MIN MAX MACRO
+MACRO MinMax(indata, vars);
+let k = 1;
+let var = %scan(&vars, &k);
+do %while(&k le 208); /* NEED TO CHANGE NUMBER TO NUMBER OF VARIABLES!!
+proc means data = &indata min max;
+var &var;
+Run;
+let k = %eval(&k + 1);
+let var = %scan(&vars, &k);
+end;
+mend MinMax;
+
+MinMax (merged1, VARS);
+```
