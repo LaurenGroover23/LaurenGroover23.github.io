@@ -20,3 +20,6 @@ R Day 2019
 Honors Capstone
 [HelpLaurenHelptheEarth.com](http://helplaurenhelptheearth.com)
 
+
+
+**Binary Classification**
