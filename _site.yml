@@ -1,0 +1,26 @@
+---
+output:
+  html_document:
+    theme: darkly
+    smart: true
+name: "Lauren G"
+output_dir: "."
+navbar:
+  title: "Portfolio"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Increasing the Top Line by Thousands"
+      href: TopLine.html
+    - text: "So, You Want to Climb Mt. Rainier?"
+      href: MtRainier.html
+    - text: "Help Lauren Help the Earth"
+      href: Help.html
+    - text: "Binary"
+      href: Binary.html
+  right:
+    - icon: fa-envelope fa-lg
+      href: mailto:laurengroover23@gmail.com
+    - icon: fa-linkedin fa-lg
+      href: https://www.linkedin.com/in/lauren-groover-215960151
+---
