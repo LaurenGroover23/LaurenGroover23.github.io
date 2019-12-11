@@ -6,7 +6,7 @@ Online Portfolio
 
 R Day 2018
 
-![Poster Presentation](/Users/Lauren/Documents/Portfolio/LaurenGroover23.github.io/TopLine.jpg)
+![Poster Presentation](TopLine.jpg)
 
 
 
@@ -14,7 +14,7 @@ R Day 2018
 
 R Day 2019
 
-![Poster Presentation](/Users/Lauren/Documents/Portfolio/LaurenGroover23.github.io/MtRainier.jpg)
+![Poster Presentation](MtRainier.jpg)
 
 
 
@@ -30,4 +30,4 @@ Honors Capstone
 
 Logistic Regression to Maximize Profits
 
-![Introduction to Binary Report](/Users/Lauren/Documents/Portfolio/LaurenGroover23.github.io/Binary.jpg)
+![Introduction to Binary Report](Binary.jpg)
