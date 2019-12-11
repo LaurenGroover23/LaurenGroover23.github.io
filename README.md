@@ -6,7 +6,7 @@ Online Portfolio
 
 R Day 2018
 
-![Poster Presentation](TopLine.jpg)
+![Poster Presentation](https://github.com/LaurenGroover23/LaurenGroover23.github.io/blob/master/TopLine.JPG)
 
 
 
@@ -14,7 +14,7 @@ R Day 2018
 
 R Day 2019
 
-![Poster Presentation](MtRainier.jpg)
+![Poster Presentation](https://github.com/LaurenGroover23/LaurenGroover23.github.io/blob/master/MtRainier.JPG)
 
 
 
