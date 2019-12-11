@@ -1,0 +1,259 @@
+---
+title: "TopLine"
+author: "lauren"
+date: "12/11/2019"
+output: html_document
+---
+
+
+             
+<img src="images/TopLine.JPG" align=middle>
+
+
+R CODE 
+
+```{r eval=FALSE}
+
+###IMPORT DATA###
+July <- read.csv("C:\\Users\\Lauren\\Desktop\\July_Check_Ins.csv")
+July <- July[, -6]
+August <- read.csv("C:\\Users\\Lauren\\Desktop\\August_Check_Ins.csv")
+August <- August[, -6]
+
+###CREATING NEW COLUMNS "NUMBER.OF.VISITS" AND "VISITS.PER.DAY"###
+July$Number.of.Visits <- NA
+August$Number.of.Visits <- NA
+July$Visits.Per.Day <- NA
+August$Visits.Per.Day <- NA
+
+###CREATING NUMBER OF VISITS DATA FRAME###
+library(plyr)
+Visits_July <- count(July$Member.Number)
+Visits_July
+Visits_August <- count(August$Member.Number)
+Visits_August
+
+###CREATING NUMBER OF VISITS PER DAY DATA FRAME###
+Per_Day_July <- count(July$Date)
+Per_Day_July
+Per_Day_August <- count(August$Date)
+Per_Day_August 
+
+###REMOVING DUPLICATE MEMBERS###
+July <- July[!duplicated(July[c("Member.Number")]),]
+August <- August[!duplicated(August[c("Member.Number")]),]
+
+###MATCH DATA FRAMES###
+July$Number.of.Visits = Visits_July$freq[match(July$Member.Number, Visits_July$x)] 
+August$Number.of.Visits = Visits_August$freq[match(August$Member.Number, Visits_August$x)]
+July$Visits.Per.Day = Per_Day_July$freq[match(July$Date, Per_Day_July$x)]
+August$Visits.Per.Day = Per_Day_August$freq[match(August$Date, Per_Day_August$x)]
+
+###BOXPLOT NUMBER OF VISITS BY ACCOUNT TYPE###
+acctlabels<-factor(August$Account.Type,levels=c("A","H","S"),
+                   labels=c("Active","On-Hold","Student"))
+boxplot(August$Number.of.Visits~acctlabels,	
+        main="Figure 1: Does Account Type Predict Number of Visits? (n = 6700)",
+        col = c("dark red","blue","Gold"),
+        boxwex=0.4)
+Active<-subset(August,subset=August$Account.Type=="A")
+On_Hold<-subset(August,subset=August$Account.Type=="H")
+Student<-subset(August,subset=August$Account.Type=="S")
+points(1,mean(Active$Number.of.Visits),pch=7)
+points(2,mean(On_Hold$Number.of.Visits),pch=7)
+points(3,mean(Student$Number.of.Visits),pch=7)
+
+#Active Labels
+text(y	=	boxplot.stats(Active$Number.of.Visits)$stats,	labels	=	boxplot.stats(Active$Number.of.Visits)$stats,	
+     x	=	1.34,cex=.6)
+text(y	=	round(max(Active$Number.of.Visits),1),	labels	=	round(max(Active$Number.of.Visits),1),	x	=	
+       1.34,cex=.6)
+text(y	=	round(min(Active$Number.of.Visits),1),	labels	=	round(min(Active$Number.of.Visits),1),	x	=	1.34,cex=.6)
+text(y	=	round(mean(Active$Number.of.Visits),1),	labels	=	round(mean(Active$Number.of.Visits),1),	
+     x	=	0.67,cex=.6)
+
+#On_Hold Labels
+text(y	=	boxplot.stats(On_Hold$Number.of.Visits)$stats,	labels	=	boxplot.stats(On_Hold$Number.of.Visits)$stats,	
+     x	=	2.33,cex=.6)
+text(y	=	round(mean(On_Hold$Number.of.Visits),1),	labels	=	round(mean(On_Hold$Number.of.Visits),1),	x	=	
+       1.67,cex=.6)
+text(y	=	round(max(On_Hold$Number.of.Visits),1),	labels	=	round(max(On_Hold$Number.of.Visits),1),	x	=	
+       2.33,cex=.6)
+text(y	=	round(min(On_Hold$Number.of.Visits),1),	labels	=	round(min(On_Hold$Number.of.Visits),1),	x	=	
+       2.33,cex=.6)
+
+#Student Labels
+text(y	=	boxplot.stats(Student$Number.of.Visits)$stats,	labels	=	boxplot.stats(Student$Number.of.Visits)$stats,	
+     x	=	3.25,cex=.6)
+text(y	=	round(mean(Student$Number.of.Visits),1),	labels	=	round(mean(Student$Number.of.Visits),1),	x	=	
+       2.75,cex=.6)
+text(y	=	round(max(Student$Number.of.Visits),1),	labels	=	round(max(Student$Number.of.Visits),1),	x	=	
+       3.25,cex=.6)
+text(y	=	round(min(Student$Number.of.Visits),1),	labels	=	round(min(Student$Number.of.Visits),1),	x	=	
+       3.25,cex=.6)
+
+###HISTOGRAM NUMBER OF VISITS BY ACCOUNT TYPE###
+library(lattice)
+library(colorRamps)
+histogram(~August$Number.of.Visits|acctlabels,
+          main="Figure 2: Does Account Type predict Number of Visits? (n = 6700)",
+          xlab="Number of Visits",
+          type="percent",
+          col=c("Dark Red", blue2green(30)),
+          breaks=seq(from=0, to=60, by=2),
+          axes=F)
+
+###MERGING CAFE SALES AND NUMBER OF VISISTS BY DAY###
+Cafe_July <- read.csv("C:\\Users\\Lauren\\Desktop\\Cafe_July.csv")
+Cafe_August <- read.csv("C:\\Users\\Lauren\\Desktop\\Cafe_August.csv")
+Cafe <- merge(Cafe_July, Cafe_August, by="Date")
+Visits <- read.csv("C:\\Users\\Lauren\\Desktop\\Visits.csv")
+Cafe_Sales <- merge(Cafe, Visits, by = "Date")
+Cafe_Sales <- Cafe_Sales[, -1]
+
+###SCATTER PLOT CAFE SALES###
+library(ggplot2)
+ggplot(Cafe_Sales) + 
+  geom_point(aes(x = July, y = July_Sales, color="Dark Red")) + 
+  geom_point(aes(x = August, y = August_Sales, color="Blue")) +
+  labs(title ="Figure 3: Cafe Sales by Number of Visits\n", 
+       x = "Number of Visits", y = "Cafe Sales", color = "Month\n") +
+  scale_color_manual(labels = c("July", "August"), values = c("Dark Red", "Blue"))
+
+###HISTOGRAM NUMBER OF VISITS###
+h<-hist(August$Number.of.Visits,
+          breaks=c(0,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60))
+h$counts = h$counts/sum(h$counts)
+plot(h, main="Figure 4: Number of Visits by Member (n = 6700)",
+          xlab="Number of Visits",
+          ylab="Percent Total",
+          ylim=c(0,0.6),
+          labels=sprintf("%0.2f%%", 100*h$counts/sum(h$counts)),
+          col=c("Dark Red",blue2green(15)),
+          axes=FALSE)
+axis(1, at=seq(0,60, by=4))
+axis(2)
+
+### HISTOGRAM NUMBER OF VISITS BY GENDER###
+OrdGender<-ordered(August$Gender, c("Male","Female"))
+histogram(~August$Number.of.Visits|OrdGender,
+          main="Figure 5: Does Gender Predict Number of Visits? (n = 6700)",
+          xlab="Number of Visits",
+          type="percent",
+          col=blue2green(15),
+          breaks=seq(from=0, to=60, by=4),
+          axes=F)
+
+t.test(August$Number.of.Visits~OrdGender)
+
+###100% STACKED BAR CHART TIME VS GENDER###
+Time.Of.Day <- read.csv("C:\\Users\\Lauren\\Desktop\\Time_Gender.csv")
+OrderedGender <- ordered(Time.Of.Day$Gender, c("Male","Female"))
+OrderedToD <- ordered(Time.Of.Day$Time, c("M","A","E","N"))
+rowtab<-round(prop.table(table(OrderedToD,OrderedGender),1)*100)
+rowtab
+trans_rowtab<- t(rowtab)
+barplot(trans_rowtab,
+        names.arg=c("Morning
+5:00 am - 11:59 am","Afternoon
+12:00 pm - 4:59 pm","Evening
+5:00 pm - 9:59 pm","Night
+10:00 pm - 4:59 am"),
+        legend = c("Male","Female"),
+        args.legend = list(title = "Gender", x = "topright", cex = .7),
+        col=c("Blue","Dark Red"),
+        main="Figure 7: Gender by Time of Day (n = 6700)")
+data_labelsROWTAB <- data.matrix(trans_rowtab)
+data_labelsROWTAB
+text(x=0.7,y=22.5, paste(data_labelsROWTAB[1,1],"%",sep = ""),col = "white", cex=1.0)
+text(x=0.7,y=72.5, paste(data_labelsROWTAB[2,1],"%",sep = ""),col = "white", cex=1.0)
+text(x=1.9,y=30.5, paste(data_labelsROWTAB[1,2],"%",sep = ""),col = "white", cex=1.0)
+text(x=1.9,y=80.5, paste(data_labelsROWTAB[2,2],"%",sep = ""),col = "white", cex=1.0)
+text(x=3.1,y=28.5, paste(data_labelsROWTAB[1,3],"%",sep = ""),col = "white", cex=1.0)
+text(x=3.1,y=78.5, paste(data_labelsROWTAB[2,3],"%",sep = ""),col = "white", cex=1.0)
+text(x=4.3,y=35, paste(data_labelsROWTAB[1,4],"%",sep = ""),col = "white", cex=1.0)
+text(x=4.3,y=85, paste(data_labelsROWTAB[2,4],"%",sep = ""),col = "white", cex=1.0)
+
+###BOX PLOT AGE BY GENDER###
+boxplot(August$Age~OrdGender,
+        names=c("Male","Female"),	
+        main="Figure 8: Does Gender Predict Age of Members? (n = 6700)",
+        col = c("Blue","Dark Red"),
+        boxwex=0.4)
+Female<-subset(August,subset=August$Gender=="Female")
+Male<-subset(August,subset=August$Gender=="Male")
+points(1,mean(Male$Age),pch=7)
+points(2,mean(Female$Age),pch=7)
+#Male Labels
+text(y	=	boxplot.stats(Male$Age)$stats,	labels	=	boxplot.stats(Male$Age)$stats,	
+     x	=	1.25,cex=.7)
+text(y	=	round(max(Male$Age),1),	labels	=	round(max(Male$Age),1),	x	=	
+       1.25,cex=.7)
+text(y	=	round(min(Male$Age),1),	labels	=	round(min(Male$Age),1),	x	=	1.25,cex=.7)
+text(y	=	round(mean(Male$Age),1),	labels	=	round(mean(Male$Age),1),	
+     x	=	0.75,cex=.7)
+#Female Labels
+text(y	=	boxplot.stats(Female$Age)$stats,	labels	=	boxplot.stats(Female$Age)$stats,	
+     x	=	2.25,cex=.7)
+text(y	=	round(mean(Female$Age),1),	labels	=	round(mean(Female$Age),1),	x	=	
+       1.73,cex=.7)
+text(y	=	round(max(Female$Age),1),	labels	=	round(max(Female$Age),1),	x	=	
+       2.25,cex=.7)
+text(y	=	round(min(Female$Age),1),	labels	=	round(min(Female$Age),1),	x	=	
+       2.25,cex=.7)
+
+###ANALYSIS OF VARIANCE###
+Date_Time <- read.csv("C:\\Users\\Lauren\\Desktop\\Visits_by_Day.csv")
+OrdTime <- ordered(Date_Time$Time.of.Day, c("M","A","E","N"))
+boxplot(Date_Time$Number.of.Visits~OrdTime,
+        names=c("Morning
+                5:00 am - 11:59 am","Afternoon
+                12:00 pm - 4:59 pm","Evening
+                5:00 pm - 9:59 pm","Night
+                10: pm - 4:59 am"), cex.axis = 0.8,
+        main="Figure 6: Does Time of Day Predict Number of Visits? (n = 42,597)",
+        col = c("Dark Red","Blue","Gold","Forest Green"),
+        boxwex=0.4)
+Morning <-subset(Date_Time,subset=Date_Time$Time.of.Day=="M")
+Afternoon <-subset(Date_Time,subset=Date_Time$Time.of.Day=="A")
+Evening <-subset(Date_Time,subset=Date_Time$Time.of.Day=="E")
+Night <-subset(Date_Time,subset=Date_Time$Time.of.Day=="N")
+Points(1,mean(Morning$Number.of.Visits),pch=7)
+points(2,mean(Afternoon$Number.of.Visits),pch=7)
+points(3,mean(Evening$Number.of.Visits),pch=7)
+points(4,mean(Night$Number.of.Visits),pch=7)
+text(y	=	boxplot.stats(Morning$Number.of.Visits)$stats,	labels	=	boxplot.stats(Morning$Number.of.Visits)$stats,	
+     x	=	1.27,cex=.6)
+text(y	=	round(max(Morning$Number.of.Visits),1),	labels	=	round(max(Morning$Number.of.Visits),1),	x	=	
+       1.27,cex=.6)
+text(y	=	round(min(Morning$Number.of.Visits),1),	labels	=	round(min(Morning$Number.of.Visits),1),	x	=	1.27,cex=.6)
+text(y	=	round(mean(Morning$Number.of.Visits),1),	labels	=	round(mean(Morning$Number.of.Visits),1),	
+     x	=	0.7,cex=.6)
+######
+text(y	=	boxplot.stats(Evening$Number.of.Visits)$stats,	labels	=	boxplot.stats(Evening$Number.of.Visits)$stats,	
+     x	=	3.3,cex=.6)
+text(y	=	round(max(Evening$Number.of.Visits),1),	labels	=	round(max(Evening$Number.of.Visits),1),	x	=	
+       3.3,cex=.6)
+text(y	=	round(min(Evening$Number.of.Visits),1),	labels	=	round(min(Evening$Number.of.Visits),1),	x	=	3.3,cex=.6)
+text(y	=	round(mean(Evening$Number.of.Visits),1),	labels	=	round(mean(Evening$Number.of.Visits),1),	
+     x	=	2.7,cex=.6)
+######
+text(y	=	boxplot.stats(Afternoon$Number.of.Visits)$stats,	labels	=	boxplot.stats(Afternoon$Number.of.Visits)$stats,	
+     x	=	2.26,cex=.6)
+text(y	=	round(max(Afternoon$Number.of.Visits),1),	labels	=	round(max(Afternoon$Number.of.Visits),1),	x	=	
+       2.26,cex=.6)
+text(y	=	round(min(Afternoon$Number.of.Visits),1),	labels	=	round(min(Afternoon$Number.of.Visits),1),	x	=	2.26,cex=.6)
+text(y	=	round(mean(Afternoon$Number.of.Visits),1),	labels	=	round(mean(Afternoon$Number.of.Visits),1),	
+     x	=	1.7,cex=.6)
+######
+text(y	=	boxplot.stats(Night$Number.of.Visits)$stats,	labels	=	boxplot.stats(Night$Number.of.Visits)$stats,	
+     x	=	4.25,cex=.6)
+text(y	=	round(max(Night$Number.of.Visits),1),	labels	=	round(max(Night$Number.of.Visits),1),	x	=	
+       4.25,cex=.6)
+text(y=round(min(Night$Number.of.Visits),1),	labels	=	round(min(Night$Number.snipof.Visits),1),	x=4.25,cex=.6)
+text(y=round(mean(Night$Number.of.Visits),1),	labels	=	round(mean(Night$Number.of.Visits),1),	
+     x=3.75,cex=.6)
+fit <- aov(Date_Time$Number.of.Visits~OrdTime, data = Date_Time)
+summary(fit)
+```
+
